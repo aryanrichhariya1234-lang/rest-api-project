@@ -21,7 +21,6 @@ app.use(helmet());
 app.use(
   cors({
     origin:
-      process.env.FRONTEND_URL ||
       "https://rest-api-project-m4jspsim0-aryans-projects-20e2dbbb.vercel.app",
     credentials: true,
   })
