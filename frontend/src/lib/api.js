@@ -1,26 +1,30 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL + "/api/v1";
 
 function getTokens() {
-  if (typeof window === 'undefined') return { accessToken: null, refreshToken: null };
+  if (typeof window === "undefined")
+    return { accessToken: null, refreshToken: null };
   return {
-    accessToken: localStorage.getItem('accessToken'),
-    refreshToken: localStorage.getItem('refreshToken'),
+    accessToken: localStorage.getItem("accessToken"),
+    refreshToken: localStorage.getItem("refreshToken"),
   };
 }
 
 function setTokens({ accessToken, refreshToken }) {
-  if (accessToken) localStorage.setItem('accessToken', accessToken);
-  if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+  if (accessToken) localStorage.setItem("accessToken", accessToken);
+  if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
 }
 
 function clearTokens() {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  localStorage.removeItem('user');
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
 }
 
-async function request(path, { method = 'GET', body, auth = true, retry = true } = {}) {
-  const headers = { 'Content-Type': 'application/json' };
+async function request(
+  path,
+  { method = "GET", body, auth = true, retry = true } = {}
+) {
+  const headers = { "Content-Type": "application/json" };
 
   if (auth) {
     const { accessToken } = getTokens();
@@ -44,7 +48,7 @@ async function request(path, { method = 'GET', body, auth = true, retry = true }
   }
 
   if (!res.ok) {
-    const err = new Error(data.message || 'Request failed');
+    const err = new Error(data.message || "Request failed");
     err.status = res.status;
     err.errors = data.errors;
     throw err;
@@ -59,8 +63,8 @@ async function tryRefreshToken() {
 
   try {
     const res = await fetch(`${API_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
     });
     const data = await res.json();
@@ -77,20 +81,28 @@ async function tryRefreshToken() {
 }
 
 export const api = {
-  register: (payload) => request('/auth/register', { method: 'POST', body: payload, auth: false }),
-  login: (payload) => request('/auth/login', { method: 'POST', body: payload, auth: false }),
+  register: (payload) =>
+    request("/auth/register", { method: "POST", body: payload, auth: false }),
+  login: (payload) =>
+    request("/auth/login", { method: "POST", body: payload, auth: false }),
   logout: (refreshToken) =>
-    request('/auth/logout', { method: 'POST', body: { refreshToken }, auth: false }),
-  getMe: () => request('/auth/me'),
+    request("/auth/logout", {
+      method: "POST",
+      body: { refreshToken },
+      auth: false,
+    }),
+  getMe: () => request("/auth/me"),
 
   getProducts: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
-    return request(`/products${qs ? `?${qs}` : ''}`);
+    return request(`/products${qs ? `?${qs}` : ""}`);
   },
   getProduct: (id) => request(`/products/${id}`),
-  createProduct: (payload) => request('/products', { method: 'POST', body: payload }),
-  updateProduct: (id, payload) => request(`/products/${id}`, { method: 'PUT', body: payload }),
-  deleteProduct: (id) => request(`/products/${id}`, { method: 'DELETE' }),
+  createProduct: (payload) =>
+    request("/products", { method: "POST", body: payload }),
+  updateProduct: (id, payload) =>
+    request(`/products/${id}`, { method: "PUT", body: payload }),
+  deleteProduct: (id) => request(`/products/${id}`, { method: "DELETE" }),
 };
 
 export { getTokens, setTokens, clearTokens };
