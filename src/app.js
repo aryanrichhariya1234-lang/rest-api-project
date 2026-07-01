@@ -20,8 +20,11 @@ app.use(helmet());
 // CORS - allow the Next.js frontend origin
 app.use(
   cors({
-    origin:
+    origin: [
       "https://rest-api-project-m4jspsim0-aryans-projects-20e2dbbb.vercel.app",
+      "https://rest-api-project-black-chi.vercel.app/",
+      "https://rest-api-project-black-chi.vercel.app",
+    ],
     credentials: true,
   })
 );
