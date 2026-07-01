@@ -22,6 +22,7 @@ app.use(
   cors({
     origin: [
       "https://rest-api-project-m4jspsim0-aryans-projects-20e2dbbb.vercel.app",
+
       "https://rest-api-project-black-chi.vercel.app/",
       "https://rest-api-project-black-chi.vercel.app",
     ],
